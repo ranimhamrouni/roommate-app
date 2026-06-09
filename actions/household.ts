@@ -1,0 +1,61 @@
+'use server'
+import { getAuthUser } from "@/lib/auth"
+import {z} from 'zod'
+import Household from '@/models/Household'
+import HouseholdMember from "@/models/HouseholdMember"
+import connectDB from "@/lib/mongodb"
+
+type HouseholdResult = 
+    | {success: true}
+    | {success: false, error: string}
+
+const createHouseholdSchema = z.object({
+    name: z.string().min(2,'Name must be at least 2 characters long'),
+})
+
+const joinHouseholdSchema = z.object({
+    inviteCode: z.string().length(6,"Invite Code must be 6 characters long")
+})
+
+export const createHousehold = async(name : string) : Promise<HouseholdResult> => {
+    try {
+        const userId = await getAuthUser();
+        if(!userId) return {success: false, error: "User not authenticated"};
+
+        await connectDB();
+
+        const result = createHouseholdSchema.safeParse({name});
+        if(!result.success) return {success: false , error: result.error.issues[0].message};
+
+        const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const household = await Household.create({name, inviteCode, createdBy: userId});
+        await HouseholdMember.create({householdId: household._id, userId});
+        return {success: true}
+    } catch(e) {
+        console.error(e);
+        return {success: false, error: "Error creating household"};
+    }
+}
+
+export const joinHousehold = async (inviteCode: string) : Promise<HouseholdResult> => {
+    try {
+        const userId = await getAuthUser();
+        if(!userId) return {success: false, error: "User not authenticated"};
+
+        await connectDB();
+
+        const result = joinHouseholdSchema.safeParse({inviteCode});
+        if(!result.success) return {success: false, error: result.error.issues[0].message};
+
+        const household = await Household.findOne({inviteCode});
+        if(!household) return {success: false, error: "Invite Code doesn't exist"};
+        let householdMember = await HouseholdMember.findOne({householdId: household._id, userId});
+        if(householdMember) return {success: false, error: "User already belongs to household"};
+        householdMember= await HouseholdMember.create({householdId: household._id, userId});
+
+        return {success:  true};
+    } catch(e) {
+        console.error(e);
+        return {success: false, error: "Error joining household"};
+    }
+}
