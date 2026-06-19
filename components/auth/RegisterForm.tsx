@@ -10,12 +10,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
-import { AlertCircleIcon } from "lucide-react"
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
+import AlertDestructive from '../ui/AlertDestructive'
 import { User } from 'lucide-react';
 import { Mail } from 'lucide-react';
 import { Lock } from 'lucide-react';
@@ -30,17 +25,6 @@ const registerSchema = z.object({
   password: z.string().min(8,"Password needs to be at least 8 characters long")
 })
 
-function AlertDestructive({errorMessage}: {errorMessage: string | null}) {
-    return (
-        <Alert variant="destructive" className="max-w-md">
-        <AlertCircleIcon />
-        <AlertTitle>Registration failed</AlertTitle>
-        <AlertDescription>
-            {errorMessage}
-        </AlertDescription>
-        </Alert>
-    )
-}
 
 const RegisterForm = () => {
     const [serverError, setServerError] = useState<string | null>(null);
@@ -157,7 +141,9 @@ const RegisterForm = () => {
                 </Link>
             </div>
         </form>
-        {serverError && <AlertDestructive errorMessage={serverError}/>}
+        <div className="mt-4">
+            {serverError && <AlertDestructive errorMessage={serverError}/>}
+        </div>
     </div>
   )
 }

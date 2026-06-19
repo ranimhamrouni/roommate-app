@@ -6,6 +6,7 @@ import User from '@/models/User';
 import { z } from 'zod'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs';
+import { getAuthUser } from '@/lib/auth';
 
 type AuthResult = 
     | { success: true } 
@@ -79,5 +80,21 @@ export const login = async ({email, password}: {email: string, password: string}
     } catch(e) {
         console.error(e);
         return {success: false, error: "Error logging in"};
+    }
+}
+
+export const signOut = async (): Promise<AuthResult> => {
+    try {
+        const cookieStore = await cookies();
+        cookieStore.set('jwtToken', '', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 0,
+            path: '/',
+        });
+        return { success: true };
+    } catch (e) {
+        console.error(e);
+        return { success: false, error: 'Error signing out' };
     }
 }
