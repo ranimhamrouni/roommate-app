@@ -1,5 +1,5 @@
-import AuthCard from '@/components/ui/auth/AuthCard'
-import LoginForm from '@/components/ui/auth/LoginForm';
+import AuthCard from '@/components/auth/AuthCard'
+import LoginForm from '@/components/auth/LoginForm';
 
 const LoginPage = () => {
   return (

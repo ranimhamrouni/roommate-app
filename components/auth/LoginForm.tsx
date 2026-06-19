@@ -15,12 +15,7 @@ import {login} from '@/actions/auth'
 import Link from 'next/link'
 import {useRouter} from 'next/navigation'
 import {useState} from 'react'
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
-import { AlertCircleIcon } from "lucide-react"
+import AlertDestructive from "../ui/AlertDestructive";
 import { Mail } from 'lucide-react'
 import { Lock } from 'lucide-react'
 
@@ -28,18 +23,6 @@ const loginSchema = z.object({
     email: z.email('Invalid email address'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
 });
-
-function AlertDestructive({errorMessage}: {errorMessage: string | null}) {
-    return (
-        <Alert variant="destructive" className="max-w-md">
-        <AlertCircleIcon />
-        <AlertTitle>Login failed</AlertTitle>
-        <AlertDescription>
-            {errorMessage}
-        </AlertDescription>
-        </Alert>
-    )
-}
 
 const LoginForm = () => {
     const [serverError, setServerError] = useState<string | null>(null);
@@ -128,7 +111,9 @@ const LoginForm = () => {
                     </Link>
                 </div>
             </form>
-            {serverError && <AlertDestructive errorMessage={serverError}/>}
+            <div className="mt-4">
+                {serverError && <AlertDestructive errorMessage={serverError}/>}
+            </div>
         </div>
     )
 }
