@@ -17,7 +17,7 @@ export const getUser= async () : Promise<UserResult> => {
         await connectDB();
 
         const user = await User.findById(userId).select('name email avatar');
-
+        if(!user) return {success: false, error: "User not found"}
         return {success: true, user}
     } catch(e) {
         console.error(e);
