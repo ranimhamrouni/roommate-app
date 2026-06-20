@@ -99,3 +99,24 @@ export const getHouseholdIdByInviteCode = async (inviteCode: string) : Promise<H
         return {success: false, error: "Error fetching Id"}
     }
 }
+
+type HouseholdDataResult =
+    | {success: true, household: IHousehold}
+    | {success: false, error: string}
+
+export const getHouseholdById = async (id: string) : Promise<HouseholdDataResult> => {
+    try {
+        await connectDB();
+
+        const household = await Household.findById(id);
+        if(!household) return {success: false, error: 'Household not found'};
+        const userId = await getAuthUser();
+        if (!userId) return { success: false, error: 'Not authenticated' };
+        const membership = await HouseholdMember.findOne({userId, householdId: household._id});
+        if(!membership) return {success: false, error: "User not a member of this household"};
+        return {success: true, household};
+    } catch(e) {
+        console.error(e);
+        return {success: false, error: 'Error fetching household'};
+    }
+}

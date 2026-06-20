@@ -71,10 +71,12 @@ export const login = async ({email, password}: {email: string, password: string}
             process.env.JWT_SECRET as string,
             {expiresIn: '7d'}
         );
-        (await cookies()).set('jwtToken',jwtToken, {
+        const cookieStore = await cookies();
+        cookieStore.set('jwtToken',jwtToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60*60*24*7,
+            path: '/'
         })
         return {success: true};
     } catch(e) {
