@@ -36,7 +36,7 @@ const HouseholdPage = async ({ params }: { params: Promise<{ id: string }> }) =>
     { label: "Pending chores", count: choresCountResult.success ? choresCountResult.number : null, emoji: "🧹", colorObject: EMOJI_OPTIONS[0] },
     { label: "Items to buy", count: shoppingCountResult.success ? shoppingCountResult.number : null, emoji: "🛒", colorObject: EMOJI_OPTIONS[3] },
     { label: "Maintenance issues", count: maintenanceCountResult.success ? maintenanceCountResult.number : null, emoji: "🛠️", colorObject: EMOJI_OPTIONS[1] },
-    { label: "Events this week", count: eventsCountResult.success ? eventsCountResult.count : null, emoji: "🗓️", colorObject: EMOJI_OPTIONS[4] },
+    { label: "Events this week", count: eventsCountResult.success ? eventsCountResult.number : null, emoji: "🗓️", colorObject: EMOJI_OPTIONS[4] },
   ]
 
     return (
