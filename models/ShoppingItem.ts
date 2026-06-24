@@ -4,6 +4,7 @@ export interface IShoppingItem extends Document {
     name: string,
     householdId: Types.ObjectId,
     type: string,
+    quantity: string,
     addedBy: Types.ObjectId,
     isPurchased: boolean,
     purchasedBy?: Types.ObjectId
@@ -26,6 +27,10 @@ const ShoppingItemSchema = new Schema<IShoppingItem> (
             enum: {
                 values: ['staple', 'shared expense']
             }
+        },
+        quantity: {
+            type: String,
+            required: true
         },
         addedBy: {
             type: Schema.Types.ObjectId,

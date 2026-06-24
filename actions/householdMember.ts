@@ -3,7 +3,7 @@ import { getAuthUser } from "@/lib/auth"
 import connectDB from "@/lib/mongodb";
 import HouseholdMember, { IHouseholdMember } from "@/models/HouseholdMember";
 
-type PopulatedHouseholdMember = Omit<IHouseholdMember, 'userId'> & {
+export type PopulatedHouseholdMember = Omit<IHouseholdMember, 'userId'> & {
     userId: { _id: string; name: string; avatar?: string }
 }
 
@@ -21,9 +21,9 @@ export const getHouseholdMembers = async (householdId: string) : Promise<househo
         const membership = await HouseholdMember.findOne({userId, householdId});
         if(!membership) return {success: false, error: "User is not a member of this hosuehold"};
 
-        const members = await HouseholdMember.find({householdId}).populate('userId', 'name avatar');
+        const members = await HouseholdMember.find({householdId}).populate('userId', 'name avatar').lean();
 
-        return {success: true, members}
+        return {success: true, members: JSON.parse(JSON.stringify(members))};
     } catch(e) {
         console.error(e);
         return {success: false, error: "Error fetching household members"};

@@ -39,7 +39,7 @@ const ChoreSchema = new Schema<IChore> (
             type: String,
             required: true,
             enum: {
-                values: ['Once','Daily','Weekly','Every other week','Monthly'], 
+                values: ['Once','Daily','Weekly','Biweekly','Monthly'], 
             }
         },
         status: {
