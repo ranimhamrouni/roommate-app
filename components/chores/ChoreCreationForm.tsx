@@ -1,7 +1,6 @@
 'use client'
 
 import {Controller, useForm} from 'react-hook-form'
-import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 import {
   Field,
@@ -34,7 +33,7 @@ const choreSchema = z.object({
 }
 )
 
-const ChoreCreationForm = ({ householdId, members, onSuccess }: { householdId: string, members: PopulatedHouseholdMember[], onSuccess: () => void }) => {
+const ChoreCreationForm = ({ householdId, members, onSuccess, onChoreAdded }: { householdId: string, members: PopulatedHouseholdMember[], onSuccess: () => void, onChoreAdded?: (chore: any) => void }) => {
     const [serverError, setServerError] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof choreSchema>>({
@@ -43,16 +42,14 @@ const ChoreCreationForm = ({ householdId, members, onSuccess }: { householdId: s
         mode: 'onChange'
     })
 
-    const router = useRouter();
-
     const onSubmit = async (data: z.infer<typeof choreSchema>) => {
         const result = await createChore(householdId, data.title, data.description, data.frequency, data.assignedTo);
         if(!result.success) {
             setServerError(result.error);
             return;
         }
+        onChoreAdded?.(result.chore);
         onSuccess();
-        router.refresh();
     }
 
     return (

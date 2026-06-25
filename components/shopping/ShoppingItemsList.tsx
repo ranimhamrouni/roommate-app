@@ -17,6 +17,10 @@ const ShoppingItemsList = ({householdId, itemsArray} : {householdId: string, ite
     const [items, setItems] = useState(itemsArray);
     const [openDialog, setOpenDialog] = useState(false);
 
+    const handleItemAdded = (item: any) => {
+        setItems(prev => [...prev, item]);
+    };
+
     const handleToggle = async (itemId: string) => {
         const previousItems = items;
 
@@ -72,6 +76,7 @@ const ShoppingItemsList = ({householdId, itemsArray} : {householdId: string, ite
             <ItemCreationForm
                 householdId={householdId}
                 onSuccess={() => setOpenDialog(false)}
+                onItemAdded={handleItemAdded}
             />
             </DialogContent>
         </Dialog>

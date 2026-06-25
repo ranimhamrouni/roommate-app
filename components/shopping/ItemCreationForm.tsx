@@ -1,7 +1,6 @@
 'use client'
 
 import {Controller, useForm} from 'react-hook-form'
-import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 import {
   Field,
@@ -30,7 +29,7 @@ const itemSchema = z.object({
 }
 )
 
-const ItemCreationForm = ({ householdId, onSuccess }: { householdId: string, onSuccess: () => void }) => {
+const ItemCreationForm = ({ householdId, onSuccess, onItemAdded }: { householdId: string, onSuccess: () => void, onItemAdded?: (item: any) => void }) => {
     const [serverError, setServerError] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof itemSchema>>({
@@ -39,8 +38,6 @@ const ItemCreationForm = ({ householdId, onSuccess }: { householdId: string, onS
         mode: 'onChange'
     })
 
-    const router = useRouter();
-
     const onSubmit = async (data: z.infer<typeof itemSchema>) => {
         const result = await createItem(householdId, data.name, data.type, data.quantity);
         if(!result.success) {
@@ -48,8 +45,8 @@ const ItemCreationForm = ({ householdId, onSuccess }: { householdId: string, onS
             return;
         }
 
+        onItemAdded?.(result.item);
         onSuccess();
-        router.refresh();
     }
 
     return (

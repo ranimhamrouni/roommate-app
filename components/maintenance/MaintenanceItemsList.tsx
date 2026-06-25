@@ -124,7 +124,7 @@ const MaintenanceItemsList = ({householdId, itemsArray} : {householdId: string, 
                     color: isCompleted ? "#3B6D11" : "#854F0B",
                     }}
                 >
-                    {isCompleted ? "Purchased" : "Not purchased"}
+                    {isCompleted ? "Completed" : "Not completed"}
                 </span>
                 </div>
             )

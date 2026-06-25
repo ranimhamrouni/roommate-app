@@ -17,6 +17,10 @@ const ChoresList = ({userId, householdId, members, choresArray} : {userId: strin
     const [filter, setFilter] = useState<'All' | 'Mine' | 'Completed'>('All');
     const [chores, setChores] = useState(choresArray);
     const [openDialog, setOpenDialog] = useState(false);
+    const handleChoreAdded = (chore: any) => {
+        setChores(prev => [chore, ...prev]);
+    };
+
     const handleToggle = async (choreId: string) => {
         const previousChores = chores;
 
@@ -74,6 +78,7 @@ const ChoresList = ({userId, householdId, members, choresArray} : {userId: strin
                 householdId={householdId}
                 members={members}
                 onSuccess={() => setOpenDialog(false)}
+                onChoreAdded={handleChoreAdded}
             />
             </DialogContent>
         </Dialog>

@@ -21,6 +21,10 @@ type choreToggleResult =
     | {success: false, error: string}
     | {success: true}
 
+type choreCreationResult =
+    | {success: false, error: string}
+    | {success: true, chore: PopulatedChore}
+
 export const getNumberPendingChores = async (householdId: string) : Promise<choresNumberResult> => {
     try{
         const userId = await getAuthUser();
@@ -86,18 +90,20 @@ export const toggleChoreStatus = async (choreId: string) : Promise<choreToggleRe
     }
 }
 
-export const createChore = async ( householdId: string, title: string, description: string, frequency: string, assignedTo: string ) : Promise<choreToggleResult> => {
+export const createChore = async ( householdId: string, title: string, description: string, frequency: string, assignedTo: string ) : Promise<choreCreationResult> => {
     try{
         const userId = await getAuthUser();
         if(!userId) return {success: false, error: "User's not authenticated"};
 
         await connectDB();
 
-        const chore = await Chore.create({householdId, title, description, frequency, assignedTo, createdBy: userId})
-
-        return {success: true}
+        const chore = await Chore.create({householdId, title, description, frequency, assignedTo, createdBy: userId});
+        await chore.populate('assignedTo', 'name avatar');
+        await chore.populate('createdBy', 'name avatar');
+        const plainChore = JSON.parse(JSON.stringify(chore));
+        return {success: true, chore: plainChore}
     } catch(e) {
         console.error(e);
-        return {success: false, error:"Error creating "}
+        return {success: false, error:"Error creating chore"}
     }
 }

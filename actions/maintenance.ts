@@ -36,7 +36,7 @@ export const getNumberUncompletedMaintenanceItems  = async (householdId: string)
         const membership = await HouseholdMember.findOne({userId, householdId});
         if(!membership) return {success: false, error: "User is not a member of this household"}
 
-        const number = await MaintenanceItem.countDocuments({householdId, isPurchased: false});
+        const number = await MaintenanceItem.countDocuments({householdId, isCompleted: false});
 
         return {success: true, number}
     } catch(e) {
